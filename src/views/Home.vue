@@ -6,6 +6,7 @@
       <button @click="addFunc">+</button>
       {{ count }}
       <button @click="lessFunc">-</button>
+      {{ computeCount }}
     </div>
     <div>
       组件
@@ -15,7 +16,17 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeMount, onUpdated, reactive } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeMount,
+  onUpdated,
+  onBeforeUnmount,
+  onUnmounted,
+  onErrorCaptured,
+  reactive,
+  computed
+} from "vue";
 import JInput from "../components/input";
 export default {
   name: "Home",
@@ -33,6 +44,8 @@ export default {
     const lessFunc = () => {
       count.value--;
     };
+    // computed
+    const computeCount = computed(() => count.value * 10);
     onMounted(() => {
       console.log("mounted -> onMounted");
     });
@@ -43,7 +56,16 @@ export default {
       console.log("updated -> onUpdated");
       console.log(count.value);
     });
-    return { message: "hello", addFunc, lessFunc, count, data };
+    onBeforeUnmount(() => {
+      console.log("beforeDestroy -> onBeforeUnmount");
+    });
+    onUnmounted(() => {
+      console.log("destroyed -> onUnmounted");
+    });
+    onErrorCaptured(() => {
+      console.log("errorCaptured -> onErrorCaptured");
+    });
+    return { message: "hello", addFunc, lessFunc, count, data, computeCount };
   },
   components: { JInput }
 };
